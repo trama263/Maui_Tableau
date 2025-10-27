@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>UnitTest Tableau With Jasmine Library</title>
+    <!--Jasmine -->
+    <link rel="shortcut icon" type="image/png" href="lib/jasmine-3.1.0/jasmine_favicon.png">
+    <link rel="stylesheet" href="lib/jasmine-3.1.0/jasmine.css">
+    <!-- Bootstrap -->
+    <link href="Bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="Bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="Bootstrap/style.css">
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script src="lib/require.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="lib/jasmine-3.1.0/jasmine.js"></script>
+    <script src="lib/jasmine-3.1.0/jasmine-html.js"></script>
+    <script src="lib/jasmine-3.1.0/boot.js"></script>
+
+
+</head>
+
+<body>
+<div id="header">
+    <div id="navbarContainer" class="container">
+        <nav class="navbar navbar-fixed-top navbar-light" style="background-color: #e3f2fd;">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-menu">
+                    <span class="sr-only"> Toogle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="" class="navbar-brand">Tableau</a>
+            </div>
+            <div class="navbar-collapse collapse" id="main-menu" style="padding-right:15px">
+                <ul class="nav navbar-nav navbar-left">
+                    <li class="active"><a href="">Home</a></li>
+                    <li class="dropdown">
+                        <a href="" data-toggle="dropdown">Aussagenlogik <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="">Syntax</a></li>
+                            <li><a href="">Sematik</a></li>
+                            <!--   <li class="divider"></li> -->
+                            <li><a href="">Tableau</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="">Über</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div><!-- /header -->
+<div id="main">
+    <div id="mainContainer" class="container">
+        <div class="row">
+            <div class="col-md-9 content">
+                <div class="row" id="formula-input">
+                    <div class="col-md-12">
+                        <form action="" class="form-horizontal" onSubmit="return false;">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <input id="input" class="form-control input-lg" type="text"
+                                           placeholder="Geben Sie eine aussagenlogische Formel hier...">
+                                </div> <!-- /col-md-10 -->
+                            </div><!-- /form-group -->
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <button class="btn btn-warning btn-lg" type="button"
+                                            onclick="pressSatisfiableButton()">
+                                        Erfüllbarkeit
+                                    </button>
+                                    <button class="btn btn-warning btn-lg" type="button"
+                                            onclick="pressTautologyButton()">
+                                        Tautologie
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div><!-- col-md-6 -->
+                    <div id="panel-input" class="col-md-12">
+                        <div class=" panel panel-info " data-toggle="collapse" data-target="#panel-input-body">
+                            <div id="panel-input-header" class="panel-heading">
+                                <h3 class="panel-title">
+                                    Eingabe:
+                                    <span id="icon-up-input"
+                                          class="glyphicon glyphicon glyphicon-menu-up pull-right"
+                                          aria-hidden="true"></span>
+                                </h3>
+                            </div> <!-- /panel-heading -->
+                            <div id="panel-input-body" class="collapse in panel-body">
+                                <div id="formulaInput">
+                                    formula
+                                </div>
+                                <div id="errorInput" class="text-danger"></div>
+                                <!--<div id="errorInput" class="alert alert-warning" role="alert"></div>-->
+                            </div><!-- /-input-body -->
+                        </div><!-- /panel-->
+                    </div><!-- panel-input -->
+                    <div id="panel-result" class="col-md-12">
+                        <div class="panel panel-info">
+                            <div id="panel-result-header" class="panel-heading" data-toggle="collapse"
+                                 data-target="#result">
+                                <h3 class="panel-title">Ergebnis:
+                                    <span id="icon-up-result"
+                                          class="glyphicon glyphicon glyphicon-menu-up pull-right"
+                                          aria-hidden="true"></span>
+                                </h3>
+
+                            </div><!-- /panel-heading -->
+                            <div id="result" class="panel-body collapse in">
+                                <div class="col-md-9 " style="padding-left: 0px">
+                                    <div id="satisfiableDiv">
+                                        <span id="satisfiableSpan"></span><a class="text-info" data-toggle="popover"
+                                                                             data-content="Eine Formel ist erfüllbar, falls sie unter wenigstens einer Belegung wahr ist."><em>erfüllbar</em></a>
+                                    </div>
+                                    <div id="unsatisfiableDiv">
+                                        <span id="unsatisfiableSpan"></span><a class="text-info"
+                                                                               data-toggle="popover"
+                                                                               data-content="Eine Formel ist unerfüllbar, es keine passende Belegung gibt, sodass diese wahr ist."><em>unerfüllbar</em></a>
+                                    </div>
+                                    <div id="tautologyDiv">
+                                        <span id="tautologySpan"></span><a class="text-info" data-toggle="popover"
+                                                                           data-content="Eine Formel ist eine Tautologie, falls sie für jede passende Belegung wahr ist."><em>Tautologie</em></a>
+                                    </div>
+                                </div>
+                                <div class="col-md-3" style="padding-right: 0px ; margin-right: 0px">
+                                    <button class="btn btn-warning pull-right" type="button" data-toggle="modal"
+                                            data-target="#solutionModal" onclick="stepByStepSolution()">
+                                        Schritt für Schritt Lösung
+                                    </button>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="solutionModal" role="dialog">
+                                        <div class="modal-dialog modal-lg">
+
+                                            <!-- Modal content-->
+                                            <div class="modal-content" style="margin:0px; padding: 0px">
+                                                <div class="modal-header bg-warning text-primary">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;
+                                                    </button>
+                                                    <h4 class="modal-title font-weight-bold">
+                                                        <b>Schritt für Schritt Lösung</b>
+                                                    </h4>
+                                                </div>
+                                                <div class="modal-body col-xs-12"
+                                                     style="margin-left:0px;margin-right:0px; padding-left: 0px; padding-right: 0px">
+                                                    <div class="col-lg-7">
+                                                        <div id="panel-stepByStep col-lg-12"
+                                                             style="margin-left:0px;margin-right:0px; padding-left: 0px; padding-right: 0px">
+                                                            <div class="panel panel-info "
+                                                                 style="margin-left:0px;margin-right:0px; padding-left: 0px; padding-right: 0px">
+                                                                <div id="panel-stepByStep-header" class="panel-heading"
+                                                                     data-toggle="collapse"
+                                                                     data-target="#stepByStep_body">
+                                                                    <h3 class="panel-title">
+                                                                        <span id="stepByStep">Lösung</span>
+                                                                        <span id="icon-up-stepByStep"
+                                                                              class="glyphicon glyphicon glyphicon-menu-up pull-right"
+                                                                              aria-hidden="true"></span>
+                                                                    </h3>
+                                                                </div><!-- /panel-heading -->
+                                                                <div id="stepByStep_body"
+                                                                     class="collapse in panel-body">
+                                                                    <p id="stepByStepDiagram"></p>
+                                                                    <div id="stepByStepDiv">
+                                                                        <p class="divider"></p>
+                                                                    </div>
+                                                                    <button id="nextStepButton"
+                                                                            class="btn btn-warning pull-right"
+                                                                            type="button" onclick="pressNextStepButton()">
+                                                                        Nächste Schritt
+                                                                    </button>
+                                                                </div>   <!-- /panel-body -->
+                                                            </div>  <!-- /panel-->
+                                                        </div><!-- panel-formula-->
+
+
+                                                    </div>
+                                                    <div class="col-lg-5">
+                                                        <div class="panel panel-info mr-0 pr-0">
+                                                            <div id="panel-alpha-header" class="panel-heading"
+                                                                 data-toggle="collapse"
+                                                                 data-target="#alpha_div">
+                                                                <h3 class="panel-title">
+                                                                    Regeln für &alpha;-Formeln
+                                                                    <span id="icon-up-alpha"
+                                                                          class="glyphicon glyphicon glyphicon-menu-up pull-right"
+                                                                          aria-hidden="true"></span>
+                                                                </h3>
+                                                            </div><!-- /panel-heading -->
+                                                            <div id="alpha_div" class="panel-body collapse in"
+                                                                 aria-expanded="true"
+                                                                 style="margin:0px; padding: 0px">
+                                                                <div class="table-responsive">
+                                                                    <table class="table table-sm table-light table-striped table-condensed  table-hover">
+                                                                        <thead>
+                                                                        <tr class="table-header">
+                                                                            <th>Nr.</th>
+                                                                            <th class="text-center">&alpha;</th>
+                                                                            <th class="text-center">&alpha;<sub>1</sub>
+                                                                            </th>
+                                                                            <th class="text-center">&alpha;<sub>2</sub>
+                                                                            </th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <tr>
+                                                                            <td>a1</td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;&#x00AC;A<sub>1</sub></td>
+                                                                            <td class="text-center">A<sub>1</sub></td>
+                                                                            <td class="text-center"></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>a2</td>
+                                                                            <td class="text-center">A<sub>1</sub> &and;
+                                                                                A<sub>2</sub></td>
+                                                                            <td class="text-center">A<sub>1</sub></td>
+                                                                            <td class="text-center">A<sub>2</sub></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>a3</td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;(A<sub>1</sub> &or;
+                                                                                A<sub>2</sub>)
+                                                                            </td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;A<sub>1</sub></td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;A<sub>2</sub></td>
+                                                                        </tr>
+
+                                                                        <tr>
+                                                                            <td>a4</td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;(A<sub>1</sub> &rarr;
+                                                                                A<sub>2</sub>)
+                                                                            </td>
+                                                                            <td class="text-center">A<sub>1</sub></td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;A<sub>2</sub></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>a5</td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;(A<sub>1</sub> &uarr;
+                                                                                A<sub>2</sub>)
+                                                                            </td>
+                                                                            <td class="text-center">A<sub>1</sub></td>
+                                                                            <td class="text-center">A<sub>2</sub></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>a6</td>
+                                                                            <td class="text-center">A<sub>1</sub> &darr;
+                                                                                A<sub>2</sub></td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;A<sub>1</sub></td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;A<sub>2</sub></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>a7</td>
+                                                                            <td class="text-center">A<sub>1</sub> &harr;
+                                                                                A<sub>2</sub></td>
+                                                                            <td class="text-center">A<sub>1</sub> &rarr;
+                                                                                A<sub>2</sub></td>
+                                                                            <td class="text-center">A<sub>2</sub> &rarr;
+                                                                                A<sub>1</sub></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>a8</td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;(A<sub>1</sub> &oplus;
+                                                                                A<sub>2</sub>)
+                                                                            </td>
+                                                                            <td class="text-center">A<sub>1</sub>&rarr;A<sub>2</sub>
+                                                                            </td>
+                                                                            <td class="text-center">A<sub>2</sub>&rarr;A<sub>1</sub>
+                                                                            </td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div><!-- /panel-body -->
+                                                        </div> <!-- /panelAlpha-->
+                                                        <div class="panel panel-info mr-0 pr-0">
+                                                            <div id="panel-beta-header" class="panel-heading"
+                                                                 data-toggle="collapse"
+                                                                 data-target="#beta_div">
+                                                                <h3 class="panel-title">
+                                                                    Regeln für &beta;-Formeln
+                                                                    <span id="icon-up-beta"
+                                                                          class="glyphicon glyphicon glyphicon-menu-up pull-right"
+                                                                          aria-hidden="true"></span>
+                                                                </h3>
+                                                            </div><!-- /panel-heading -->
+                                                            <div id="beta_div" class="panel-body collapse in"
+                                                                 aria-expanded="true"
+                                                                 style="margin:0px; padding: 0px">
+                                                                <div class="table-responsive">
+                                                                    <table class="table table-sm table-light table-striped table-condensed  table-hover">
+                                                                        <thead>
+                                                                        <tr class="table-header">
+                                                                            <th>Nr.</th>
+                                                                            <th class="text-center">&beta;</th>
+                                                                            <th class="text-center">&beta;<sub>1</sub>
+                                                                            </th>
+                                                                            <th class="text-center">&beta;<sub>2</sub>
+                                                                            </th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <tr>
+                                                                            <td>b1</td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;(B<sub>1</sub> &and;
+                                                                                B<sub>2</sub>)
+                                                                            </td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;B<sub>1</sub></td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;B<sub>2</sub></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>b2</td>
+                                                                            <td class="text-center">B<sub>1</sub> &or; B<sub>2</sub>
+                                                                            </td>
+                                                                            <td class="text-center">B<sub>1</sub></td>
+                                                                            <td class="text-center">B<sub>2</sub></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>b3</td>
+                                                                            <td class="text-center">B<sub>1</sub> &rarr;
+                                                                                B<sub>2</sub></td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;B<sub>1</sub></td>
+                                                                            <td class="text-center">B<sub>2</sub></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>b4</td>
+                                                                            <td class="text-center">B<sub>1</sub> &uarr;
+                                                                                B<sub>2</sub></td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;B<sub>1</sub></td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;B<sub>2</sub></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>b5</td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;(B<sub>1</sub> &darr;
+                                                                                B<sub>2</sub>)
+                                                                            </td>
+                                                                            <td class="text-center">B<sub>1</sub></td>
+                                                                            <td class="text-center">B<sub>2</sub></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>b6</td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;(B<sub>1</sub> &harr;
+                                                                                B<sub>2</sub>)
+                                                                            </td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;(B<sub>1</sub> &rarr;
+                                                                                B<sub>2</sub>)
+                                                                            </td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;(B<sub>2</sub> &rarr;
+                                                                                B<sub>1</sub>)
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>b7</td>
+                                                                            <td class="text-center">B<sub>1</sub>&oplus;B<sub>2</sub>
+                                                                            </td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;(B<sub>1</sub> &rarr;
+                                                                                B<sub>2</sub>)
+                                                                            </td>
+                                                                            <td class="text-center">
+                                                                                &#x00AC;(B<sub>2</sub> &rarr;
+                                                                                B<sub>1</sub>)
+                                                                            </td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div><!-- /panel-body -->
+                                                        </div> <!-- /panelBeta-->
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-link" data-dismiss="modal">
+                                                        Close
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div><!-- /Modal-solutionModal-->
+                                </div>
+                            </div> <!-- /panel-body -->
+                        </div>  <!-- /panel-->
+                    </div><!-- panel-result -->
+                    <div id="panel-formula" class="col-md-12">
+                        <div class="panel panel-info">
+                            <div id="panel-formula-header" class="panel-heading" data-toggle="collapse"
+                                 data-target="#Formula_chart">
+                                <h3 class="panel-title">
+                                    <span id="formula">formulaTree</span>
+                                    <span id="icon-up-formula"
+                                          class="glyphicon glyphicon glyphicon-menu-up pull-right"
+                                          aria-hidden="true"></span>
+                                </h3>
+                            </div><!-- /panel-heading -->
+                            <div id="Formula_chart" class="collapse in panel-body scroll">
+                                <div id="Formula_chart_div" class="chart"></div>
+                            </div>   <!-- /panel-body -->
+                        </div>  <!-- /panel-->
+                    </div><!-- panel-formula-->
+                    <div id="panel-tableau" class="col-md-12 ">
+                        <div class="panel panel-info">
+                            <div id="panel-tableau-header" class="panel-heading" data-toggle="collapse"
+                                 data-target="#Tableau_chart">
+                                <h3 class="panel-title">
+                                    <span id="tableau">Tableau </span>
+                                    <span id="icon-up-tableau"
+                                          class="glyphicon glyphicon glyphicon-menu-up pull-right"
+                                          aria-hidden="true"></span>
+                                </h3>
+                            </div>  <!-- /panel-heading -->
+                            <div id="Tableau_chart" class="collapse in panel-body scroll">
+                                <div id="Tableau_chart_div" class="chart"></div>
+                            </div><!-- /panel-body -->
+                        </div> <!-- /panel -->
+                    </div><!-- panel-tableau -->
+                </div> <!-- /row -->
+            </div><!-- /content -->
+            <div class="col-md-3 sidebar">
+                <div class="panel panel-info notation mr-0 pr-0">
+                    <div id="panel-notation-header" class="panel-heading" data-toggle="collapse"
+                         data-target="#notation_div">
+                        <h3 class="panel-title">
+                            Notation
+                            <span id="icon-up-notation" class="glyphicon glyphicon glyphicon-menu-up pull-right"
+                                  aria-hidden="true"></span>
+                        </h3>
+                    </div><!-- /panel-heading -->
+                    <div id="notation_div" class="panel-body collapse in" aria-expanded="true"
+                         style="margin:0px; padding: 0px">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-light table-striped table-condensed  table-hover">
+                                <thead>
+                                <tr class="table-header">
+                                    <th>Operation</th>
+                                    <th>Junktor</th>
+                                    <th>Eingabezeichen</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Negation</td>
+                                    <td class="text-center">&#x00AC;</td>
+                                    <td class="text-center">!</td>
+                                </tr>
+                                <tr>
+                                    <td>Konjunktion</td>
+                                    <td class="text-center">&and;</td>
+                                    <td class="text-center">&</td>
+                                </tr>
+                                <tr>
+                                    <td>Disjunktion</td>
+                                    <td class="text-center">&or;</td>
+                                    <td class="text-center">|</td>
+                                </tr>
+
+                                <tr>
+                                    <td>Implikation</td>
+                                    <td class="text-center">&#x2192;</td>
+                                    <td class="text-center">=></td>
+                                </tr>
+                                <tr>
+                                    <td>Äquivalenz</td>
+                                    <td class="text-center">&#x2194;</td>
+                                    <td class="text-center"><=></td>
+                                </tr>
+                                <tr>
+                                    <td>Xor</td>
+                                    <td class="text-center">&oplus;</td>
+                                    <td class="text-center">^</td>
+                                </tr>
+                                <tr>
+                                    <td>Nor</td>
+                                    <td class="text-center">&#x2193;</td>
+                                    <td class="text-center">!|</td>
+                                </tr>
+                                <tr>
+                                    <td>Nand</td>
+                                    <td class="text-center">&#x2191;</td>
+                                    <td class="text-center">!&</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div><!-- /panel-body -->
+                </div> <!-- /panel-->
+            </div><!-- /sidebar -->
+        </div><!-- /row -->
+    </div> <!-- /container -->
+</div><!-- /content -->
+<div id="footer">
+    <div class="container">
+        <p>Copyright 2018 <a href="http://Tableau.com"></a></p>
+    </div><!-- /footer -->
+</div><!-- content -->
+<script>
+    $(function () {
+//Tooltip
+        $('[data-toggle = "tooltip"]').tooltip({
+            placement: "bottom"
+        });
+        $('[data-toggle = "popover"]').popover({
+            placement: 'auto',
+            trigger: "hover"
+        });
+    });
+    $('#panel-result-header').click(function () {
+        $("#icon-up-result").toggleClass('glyphicon-menu-up').toggleClass('glyphicon-menu-down');
+    });
+    $('#panel-input-header').click(function () {
+        $("#icon-up-input").toggleClass('glyphicon-menu-up').toggleClass('glyphicon-menu-down');
+    });
+    $('#panel-formula-header').click(function () {
+        $("#icon-up-formula").toggleClass('glyphicon-menu-up').toggleClass('glyphicon-menu-down');
+    });
+    $('#panel-tableau-header').click(function () {
+        $("#icon-up-tableau").toggleClass('glyphicon-menu-up').toggleClass('glyphicon-menu-down');
+    });
+    $('#panel-notation-header').click(function () {
+        $("#icon-up-notation").toggleClass('glyphicon-menu-up').toggleClass('glyphicon-menu-down');
+    });
+    $('#panel-alpha-header').click(function () {
+        $("#icon-up-alpha").toggleClass('glyphicon-menu-up').toggleClass('glyphicon-menu-down');
+    });
+    $('#panel-beta-header').click(function () {
+        $("#icon-up-beta").toggleClass('glyphicon-menu-up').toggleClass('glyphicon-menu-down');
+    });
+    $('#panel-stepByStep-header').click(function () {
+        $("#icon-up-stepByStep").toggleClass('glyphicon-menu-up').toggleClass('glyphicon-menu-down');
+    });
+</script>
+
+<!--incl. Test files here...-->
+<script src="src/Global.js"></script>
+<script src="src/TableauClient.js"></script>
+<script src="Tests/TableauControllerAndViewUnitTest.js"></script>
+
+</body>
+
+</html>

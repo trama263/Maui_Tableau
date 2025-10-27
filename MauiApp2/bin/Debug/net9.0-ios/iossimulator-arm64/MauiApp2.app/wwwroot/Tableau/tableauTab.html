@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Tableau Demo</title>
+    <!-- Bootstrap -->
+    <link href="Bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="Bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="Bootstrap/style.css">
+
+    <script src="lib/require.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
+    <!--<script src="js/bootstrap.min.js"></script>-->
+
+</head>
+
+<body>
+<div id="header">
+    <div id="navbarContainer" class="container">
+        <nav class="navbar navbar-fixed-top navbar-light" style="background-color: #e3f2fd;">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-menu">
+                    <span class="sr-only"> Toogle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="" class="navbar-brand">Tableau</a>
+            </div>
+            <div class="navbar-collapse collapse" id="main-menu" style="padding-right:15px">
+                <ul class="nav navbar-nav navbar-left">
+                    <li class="active"><a href="indexTableau.html">Home</a></li>
+                    <li class="dropdown">
+                        <a href="" data-toggle="dropdown">Aussagenlogik <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="syntaxTab.html">Syntax</a></li>
+                            <li><a href="tautologyTab.html">Erfüllbarkeit & Tautologien</a></li>
+                            <!--   <li class="divider"></li> -->
+                            <li><a href="tableauTab.html">Tableau</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="infoTab.html">Über</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div><!-- /header -->
+<div id="main">
+    <div id="mainContainer" class="container">
+        <p>Das Prinzip hinter semantischen Tableaus ist sehr einfach: Man sucht nach
+            einem Modell, das die Interpretation erfüllt, indem man die Formel in mehreren
+            Mengen von Literalen zerlegt. Eine Menge von Literalen ist <em>erfüllbar</em>, wenn
+            die Menge <em>kein komplementäres Literalpaar</em> enthält. Die Formel ist <em>erfüllbar</em>,
+            wenn eine dieser Mengen <em>erfüllbar</em> ist. Die Formel ist <em>unerfüllbar</em>, wenn <em>keine</em>
+            Mengen <em>erfüllbar</em> sind d.h seine <em>Negation</em> eine <em>Tautologie</em> ist. </p>
+        <h3 class="text-primary">I. Literal und komplementäres Literalpaar</h3>
+        <p>
+            Ein Literal ist ein Atom oder die Negation eines Atoms. Ein Atom ist ein
+            positives Literal und die Negation eines Atoms ist ein negatives Literal. Für
+            jedes Atom p ist {p,¬p} ein komplementäres Literalpaar.
+        </p>
+
+        <p>
+            Für jede Formel A ist {A,¬A} ein komplementäres Formelpaar. A ist das
+            Komplement von ¬A und ¬A ist das Komplement von A.
+        </p>
+        <h3 class="text-primary">II. Konstruktion von semantischen Tableaus</h3>
+        <ul>
+            <li>Ein aussagenlogisches Tableau ist ein markierter Baum. Jeder Knoten
+                ist mit einer Menge von Formeln markiert.
+            </li>
+            <li>Die Eingabeformel ist an der Wurzel.</li>
+
+            <li>Jeder Knoten hat einen oder zwei untergeordnete Knoten, abhängig davon,
+                wie eine Formel, die den Knoten kennzeichnet, zerlegt wird. Dadurch,
+                dass ein Knoten mit &alpha;-Formel gekennzeichnet wird, hat er nur
+                einen untergeordneten Knoten, ansonsten hat er zwei Knoten. Die Klassifizierung
+                von &alpha;- und &beta;-Formeln wird in den folgenden Tabellen definiert.
+            </li>
+            <li>Die Blätter sind durch eine Menge von Literalen markiert.</li>
+            <li>Ein Blatt, das durch eine Menge von Literalen markiert ist, die ein komplementäres
+                Paar von Literalen enthält, ist mit geschlossen (×) markiert
+            </li>
+            <li>Ein Blatt, das durch eine Menge von Literalen markiert ist, die ein komplementäres
+                Paar von Literalen enthält, ist mit geschlossen (&odot;) markiert
+            </li>
+            <li>Ein Tableau ist geschlossen, wenn alle seine Blätter als geschlossen markiert
+                sind. Ansonsten (wenn ein Blatt als offen markiert ist), ist es offen.
+            </li>
+        </ul>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-4">
+                <table class="table table-sm table-light table-striped table-condensed  table-hover">
+                    <thead>
+                    <tr class="table-header">
+                        <th>Nr.</th>
+                        <th class="text-center">&alpha;</th>
+                        <th class="text-center">&alpha;<sub>1</sub>
+                        </th>
+                        <th class="text-center">&alpha;<sub>2</sub>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>a1</td>
+                        <td class="text-center">
+                            &#x00AC;&#x00AC;A<sub>1</sub></td>
+                        <td class="text-center">A<sub>1</sub></td>
+                        <td class="text-center"></td>
+                    </tr>
+                    <tr>
+                        <td>a2</td>
+                        <td class="text-center">A<sub>1</sub> &and;
+                            A<sub>2</sub></td>
+                        <td class="text-center">A<sub>1</sub></td>
+                        <td class="text-center">A<sub>2</sub></td>
+                    </tr>
+                    <tr>
+                        <td>a3</td>
+                        <td class="text-center">
+                            &#x00AC;(A<sub>1</sub> &or;
+                            A<sub>2</sub>)
+                        </td>
+                        <td class="text-center">
+                            &#x00AC;A<sub>1</sub></td>
+                        <td class="text-center">
+                            &#x00AC;A<sub>2</sub></td>
+                    </tr>
+
+                    <tr>
+                        <td>a4</td>
+                        <td class="text-center">
+                            &#x00AC;(A<sub>1</sub> &rarr;
+                            A<sub>2</sub>)
+                        </td>
+                        <td class="text-center">A<sub>1</sub></td>
+                        <td class="text-center">
+                            &#x00AC;A<sub>2</sub></td>
+                    </tr>
+                    <tr>
+                        <td>a5</td>
+                        <td class="text-center">
+                            &#x00AC;(A<sub>1</sub> &uarr;
+                            A<sub>2</sub>)
+                        </td>
+                        <td class="text-center">A<sub>1</sub></td>
+                        <td class="text-center">A<sub>2</sub></td>
+                    </tr>
+                    <tr>
+                        <td>a6</td>
+                        <td class="text-center">A<sub>1</sub> &darr;
+                            A<sub>2</sub></td>
+                        <td class="text-center">
+                            &#x00AC;A<sub>1</sub></td>
+                        <td class="text-center">
+                            &#x00AC;A<sub>2</sub></td>
+                    </tr>
+                    <tr>
+                        <td>a7</td>
+                        <td class="text-center">A<sub>1</sub> &harr;
+                            A<sub>2</sub></td>
+                        <td class="text-center">A<sub>1</sub> &rarr;
+                            A<sub>2</sub></td>
+                        <td class="text-center">A<sub>2</sub> &rarr;
+                            A<sub>1</sub></td>
+                    </tr>
+                    <tr>
+                        <td>a8</td>
+                        <td class="text-center">
+                            &#x00AC;(A<sub>1</sub> &oplus;
+                            A<sub>2</sub>)
+                        </td>
+                        <td class="text-center">A<sub>1</sub>&rarr;A<sub>2</sub>
+                        </td>
+                        <td class="text-center">A<sub>2</sub>&rarr;A<sub>1</sub>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-4">
+                <table class="table table-sm table-light table-striped table-condensed  table-hover">
+                    <thead>
+                    <tr class="table-header">
+                        <th>Nr.</th>
+                        <th class="text-center">&beta;</th>
+                        <th class="text-center">&beta;<sub>1</sub>
+                        </th>
+                        <th class="text-center">&beta;<sub>2</sub>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>b1</td>
+                        <td class="text-center">
+                            &#x00AC;(B<sub>1</sub> &and;
+                            B<sub>2</sub>)
+                        </td>
+                        <td class="text-center">
+                            &#x00AC;B<sub>1</sub></td>
+                        <td class="text-center">
+                            &#x00AC;B<sub>2</sub></td>
+                    </tr>
+                    <tr>
+                        <td>b2</td>
+                        <td class="text-center">B<sub>1</sub> &or; B<sub>2</sub>
+                        </td>
+                        <td class="text-center">B<sub>1</sub></td>
+                        <td class="text-center">B<sub>2</sub></td>
+                    </tr>
+                    <tr>
+                        <td>b3</td>
+                        <td class="text-center">B<sub>1</sub> &rarr;
+                            B<sub>2</sub></td>
+                        <td class="text-center">
+                            &#x00AC;B<sub>1</sub></td>
+                        <td class="text-center">B<sub>2</sub></td>
+                    </tr>
+                    <tr>
+                        <td>b4</td>
+                        <td class="text-center">B<sub>1</sub> &uarr;
+                            B<sub>2</sub></td>
+                        <td class="text-center">
+                            &#x00AC;B<sub>1</sub></td>
+                        <td class="text-center">
+                            &#x00AC;B<sub>2</sub></td>
+                    </tr>
+                    <tr>
+                        <td>b5</td>
+                        <td class="text-center">
+                            &#x00AC;(B<sub>1</sub> &darr;
+                            B<sub>2</sub>)
+                        </td>
+                        <td class="text-center">B<sub>1</sub></td>
+                        <td class="text-center">B<sub>2</sub></td>
+                    </tr>
+                    <tr>
+                        <td>b6</td>
+                        <td class="text-center">
+                            &#x00AC;(B<sub>1</sub> &harr;
+                            B<sub>2</sub>)
+                        </td>
+                        <td class="text-center">
+                            &#x00AC;(B<sub>1</sub> &rarr;
+                            B<sub>2</sub>)
+                        </td>
+                        <td class="text-center">
+                            &#x00AC;(B<sub>2</sub> &rarr;
+                            B<sub>1</sub>)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>b7</td>
+                        <td class="text-center">B<sub>1</sub>&oplus;B<sub>2</sub>
+                        </td>
+                        <td class="text-center">
+                            &#x00AC;(B<sub>1</sub> &rarr;
+                            B<sub>2</sub>)
+                        </td>
+                        <td class="text-center">
+                            &#x00AC;(B<sub>2</sub> &rarr;
+                            B<sub>1</sub>)
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <p></p>
+        <p></p>
+        <p><strong>Bsp:</strong> Semantische Tableau für die Formeln: A = p &and; (¬q &or; ¬p) und B = (p &or; q) &and; (¬p &and;
+            ¬q) <em>(Abbildung 1)</em>.</p>
+        <div class="text-center">
+            <img src="Bootstrap\img\tableau-tree.PNG">
+        </div>
+
+
+
+        <h3 class="text-primary">III. Bemerkung:</h3>
+        <p>Die Tableau-Konstruktion ist nicht eindeutig. Die folgende Abbildung ist ein weiteres
+            Tableau für die Formel B <em>(Abbildung 2)</em>.</p>
+        <div class="text-center">
+            <img src="Bootstrap\img\tableau-tree-B.PNG">
+        </div>
+
+
+        <p>Die Unterschiede zwischen dem Tableau in der <em>(Abbildung 1)</em> und in der
+            <em>(Abbildung 2)</em> sind, dass in dem ersten Tableau die Belegung für ¬p &and; ¬q
+            gesucht werden, bevor die für p &or; q gesucht wird. Das erste Tableau enthält
+            weniger Knoten, was zeigt, dass <strong>Konjunktionen vor Disjunktionen</strong> vorzuziehen
+            sind.</p>
+
+
+    </div> <!-- /container -->
+</div><!-- /content -->
+<div id="footer">
+    <div class="container">
+        <p>Copyright 2018 <a href="http://Tableau.com"></a></p>
+    </div><!-- /footer -->
+</div><!-- content -->
+<script>
+    $(function () {
+//Tooltip
+        $('[data-toggle = "tooltip"]').tooltip({
+            placement: "bottom"
+        });
+        $('[data-toggle = "popover"]').popover({
+            placement: 'auto',
+            trigger: "hover"
+        });
+    });
+    $('#panel-result-header').click(function () {
+        $("#icon-up-result").toggleClass('glyphicon-menu-up').toggleClass('glyphicon-menu-down');
+    });
+    $('#panel-input-header').click(function () {
+        $("#icon-up-input").toggleClass('glyphicon-menu-up').toggleClass('glyphicon-menu-down');
+    });
+    $('#panel-formula-header').click(function () {
+        $("#icon-up-formula").toggleClass('glyphicon-menu-up').toggleClass('glyphicon-menu-down');
+    });
+    $('#panel-tableau-header').click(function () {
+        $("#icon-up-tableau").toggleClass('glyphicon-menu-up').toggleClass('glyphicon-menu-down');
+    });
+    $('#panel-notation-header').click(function () {
+        $("#icon-up-notation").toggleClass('glyphicon-menu-up').toggleClass('glyphicon-menu-down');
+    });
+    $('#panel-alpha-header').click(function () {
+        $("#icon-up-alpha").toggleClass('glyphicon-menu-up').toggleClass('glyphicon-menu-down');
+    });
+    $('#panel-beta-header').click(function () {
+        $("#icon-up-beta").toggleClass('glyphicon-menu-up').toggleClass('glyphicon-menu-down');
+    });
+    $('#panel-stepByStep-header').click(function () {
+        $("#icon-up-stepByStep").toggleClass('glyphicon-menu-up').toggleClass('glyphicon-menu-down');
+    });
+</script>
+<script src="src/Global.js"></script>
+<script src="src/TableauClient.js"></script>
+</body>
+
+</html>

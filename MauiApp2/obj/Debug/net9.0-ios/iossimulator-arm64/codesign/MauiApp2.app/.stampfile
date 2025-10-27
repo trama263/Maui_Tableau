@@ -1,0 +1,1 @@
+-v --force --timestamp=none --sign - --entitlements /Users/tramnguyen/workbench/MauiApp2/MauiApp2/obj/Debug/net9.0-ios/iossimulator-arm64/Entitlements.xcent /Users/tramnguyen/workbench/MauiApp2/MauiApp2/bin/Debug/net9.0-ios/iossimulator-arm64/MauiApp2.app

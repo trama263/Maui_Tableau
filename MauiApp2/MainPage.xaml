@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp2.MainPage"
+             Title="HybridWebView Demo">
+
+    <Grid RowDefinitions="Auto,Auto, Auto,*"
+          ColumnDefinitions="*" RowSpacing="12">
+        <!-- <Button Grid.Row = "0" Text="Send message to JavaScript" -->
+        <!--         Clicked="OnSendMessageButtonClicked" /> -->
+        <!-- <Button Grid.Row = "1" Text="Call JS function addNumbers without specifying the generic argument" Clicked="CallJSAddNumbers_OnClicked"/> -->
+        <!-- <Button Grid.Row = "2" Text="Call JS function addNumbers with specifying the generic argument" Clicked="CallJSAddNumbers2_OnClicked"/> -->
+
+        <HybridWebView x:Name="HybridWebView"
+                       RawMessageReceived="OnHybridWebViewRawMessageReceived"
+                       DefaultFile="Tableau/indexTableau.html"
+                       Grid.Row="3" />
+    </Grid>
+
+</ContentPage>
