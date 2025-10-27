@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace Maui_Tableau {
     public partial class MainPage : ContentPage {
       
-
+// Test
         public MainPage() {
             InitializeComponent();
             HybridWebView.SetInvokeJavaScriptTarget(this);
